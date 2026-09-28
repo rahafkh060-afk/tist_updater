@@ -35,4 +35,4 @@ jobs:
           PLAYABL_EMAIL_6: ${{ secrets.PLAYABL_EMAIL }}
           PLAYABL_PASSWORD_6: ${{ secrets.PLAYABL_PASSWORD }}
         run: |
-          python four_accounts.py 
+          python teester
