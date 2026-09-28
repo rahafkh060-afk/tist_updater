@@ -32,7 +32,7 @@ jobs:
           PLAYABL_PASSWORD_4: ${{ secrets.PLAYABL_PASSWORD_4 }}
           PLAYABL_EMAIL_5: ${{ secrets.PLAYABL_EMAIL_5 }}
           PLAYABL_PASSWORD_5: ${{ secrets.PLAYABL_PASSWORD_5 }}
-          PLAYABL_EMAIL_6: ${{ secrets.PLAYABL_EMAIL }}
-          PLAYABL_PASSWORD_6: ${{ secrets.PLAYABL_PASSWORD }}
+          PLAYABL_EMAIL_6: ${{ secrets.PLAYABL_EMAIL_6 }}
+          PLAYABL_PASSWORD_6: ${{ secrets.PLAYABL_PASSWORD_6 }}
         run: |
           python teester
