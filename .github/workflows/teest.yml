@@ -23,6 +23,8 @@ jobs:
       - name: Run automation script
         env:
           PLAYABL_EMAIL_1: ${{ secrets.PLAYABL_EMAIL_1 }}
+          PLAYABL_EMAIL: ${{ secrets.PLAYABL_EMAIL }}
+          PLAYABL_PASSWORD: ${{ secrets.PLAYABL_PASSWORD }}
           PLAYABL_PASSWORD_1: ${{ secrets.PLAYABL_PASSWORD_1 }}
           PLAYABL_EMAIL_2: ${{ secrets.PLAYABL_EMAIL_2 }}
           PLAYABL_PASSWORD_2: ${{ secrets.PLAYABL_PASSWORD_2 }}
@@ -33,4 +35,4 @@ jobs:
           PLAYABL_EMAIL_5: ${{ secrets.PLAYABL_EMAIL_5 }}
           PLAYABL_PASSWORD_5: ${{ secrets.PLAYABL_PASSWORD_5 }}
         run: |
-          python four_accounts.py
+          python four_accounts.py 
