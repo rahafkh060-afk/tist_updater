@@ -81,7 +81,7 @@ ACCOUNTS_DATA = [
         "email": os.environ.get("PLAYABL_EMAIL_6", "").strip(),
         "password": os.environ.get("PLAYABL_PASSWORD_6", "").strip(),
         "games": [
-            "https://playabl.ai/en/projects/6a1fba5b90c2439ef7636d92",
+            "https://playabl.ai/en/projects/6aab10fd1d148414504a9a41",
             "https://playabl.ai/en/projects/6a2e4c1e6da504efb412a02d",
             "https://playabl.ai/en/projects/6a39a5f4d7d4691c2a55d189",
             "https://playabl.ai/en/projects/6a2fb1d1bb026a03dd9f67bc",
@@ -134,7 +134,7 @@ ACCOUNTS_DATA = [
             "https://playabl.ai/en/projects/6aaa3bb9bddf69057fc7ca22",
             "https://playabl.ai/en/projects/6aaa3af4eb9d46ddbc6be0a6",
             "https://playabl.ai/en/projects/6aa93524eb9d46ddbc662711",
-            "https://playabl.ai/en/projects/6aab10fd1d148414504a9a41"
+             "https://playabl.ai/en/projects/6a1fba5b90c2439ef7636d92"
         ]
     }
 ]
