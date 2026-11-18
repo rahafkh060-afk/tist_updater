@@ -1,4 +1,4 @@
-                        # 4. بداخل صفحة الإعدادات: استهداف حقل اسم المشروع بدقة عبر الـ name أو الـ placeholder
+                        # 4. بداخل صفحة الإعدادات: استهداف حقل اسم المشروع بدقة عبر الـ name
                         name_input = page.locator('input[name="name"]').first
                         
                         if await name_input.is_visible(timeout=5000):
@@ -8,7 +8,7 @@
                             current_val = await name_input.input_value()
                             current_lower = current_val.lower().strip()
                             
-                            # تطبيق القاعدة الذكية للتبديل اللي اتفقنا عليها
+                            # تطبيق القاعدة الذكية للتبديل
                             if "notplayabl" in current_lower:
                                 new_val = "playabl"
                                 print(f"    [-] Found 'notplayabl' -> changing to 'playabl'")
