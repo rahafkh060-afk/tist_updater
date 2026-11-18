@@ -40,7 +40,7 @@ async def run():
                 continue
 
             print("\n==========================================")
-            print(f"[+] Processing Account {index} (Test): {email}")
+            print(f"[+] Processing Account {index} (Smart Logic Test): {email}")
             print(f"[+] Projects: {len(acc['games'])}")
             print("==========================================")
 
@@ -59,6 +59,7 @@ async def run():
                 await page.goto(first_game_url, wait_until="domcontentloaded", timeout=20000)
                 await page.wait_for_timeout(1500)
 
+                # 1. تسجيل الدخول
                 if await page.locator('input[type="email"], input[name="email"]').count() > 0:
                     print("  [+] Logging in...")
                     email_input = page.locator('input[type="email"], input[name="email"]').first
@@ -85,60 +86,58 @@ async def run():
                 for g_index, url in enumerate(games, start=1):
                     print(f"  [{g_index}/{len(games)}] Updating project: {url}")
                     try:
-                        # 1. الدخول لصفحة المشروع والانتظار حتى تستقر الشبكة تماماً
+                        # 2. فتح رابط المشروع
                         await page.goto(url, wait_until="networkidle", timeout=20000)
-                        await page.wait_for_timeout(3000)
+                        await page.wait_for_timeout(2500)
 
-                        # 2. الضغط على زر "تحديث / Update" العلوي للانتقال لصفحة الإعدادات
-                        top_update_btn = page.locator('button:has-text("تحديث"), button:has-text("Update"), [role="button"]:has-text("تحديث"), [role="button"]:has-text("Update")').first
-                        if await top_update_btn.is_visible(timeout=5000):
-                            await top_update_btn.click()
+                        # 3. النقر على تبويب/كلمة "Post"
+                        post_btn = page.locator('button:has-text("Post"), button:has-text("بوست"), [role="tab"]:has-text("Post"), [role="tab"]:has-text("بوست"), a:has-text("Post")').first
+                        if await post_btn.is_visible(timeout=5000):
+                            await post_btn.click()
                             await page.wait_for_load_state("networkidle")
-                            await page.wait_for_timeout(3000)
+                            await page.wait_for_timeout(2000)
                         else:
-                            print("    [!] Top update button not found, skipping...")
+                            print("    [!] 'Post' button not found, skipping...")
                             continue
 
-                        # 3. بداخل صفحة الإعدادات: التعامل مع حقل الاسم وكتابته كتابة حقيقية
-                        name_input = page.locator('input').first
-                        if await name_input.is_visible(timeout=5000):
-                            await name_input.click()
-                            await page.wait_for_timeout(500)
-
-                            current_val = await name_input.input_value()
-                            
-                            # تبديل الـ $
-                            if current_val.endswith("$"):
-                                new_val = current_val[:-1]
-                                print(f"    [-] Removing '$' -> {new_val}")
-                            else:
-                                new_val = current_val + "$"
-                                print(f"    [+] Adding '$' -> {new_val}")
-
-                            # مسح الحقل وإعادة كتابة القيمة ببطء لضمان تفاعل متصفح الموقع (React)
-                            await name_input.fill("")
+                        # 4. فحص العنوان وتطبيق منطق التحويل الذكي
+                        title_input = page.locator('input[type="text"]').first
+                        if await title_input.is_visible(timeout=5000):
+                            await title_input.click()
                             await page.wait_for_timeout(300)
-                            await name_input.type(new_val, delay=50)
+
+                            current_title = await title_input.input_value()
+                            current_lower = current_title.lower().strip()
+                            
+                            # تطبيق القاعدة الجديدة
+                            if "notplayabl" in current_lower:
+                                new_title = "playabl"
+                                print(f"    [-] Found 'notplayabl' -> changing to 'playabl'")
+                            elif "playabl" in current_lower:
+                                new_title = "notplayabl"
+                                print(f"    [+] Found 'playabl' -> changing to 'notplayabl'")
+                            else:
+                                new_title = "playabl"
+                                print(f"    [!] Different name ('{current_title}') -> setting to 'playabl'")
+
+                            # مسح العنوان وإعادة كتابة الجديد
+                            await title_input.fill("")
+                            await page.wait_for_timeout(300)
+                            await title_input.type(new_title, delay=50)
                             await page.wait_for_timeout(1500)
 
-                        # 4. النقر على صورة الغلاف للتأكيد
-                        cover_img = page.locator('img[alt*="cover"], img[src*="blob"], div[class*="cover"] img').first
-                        if await cover_img.is_visible(timeout=2000):
-                            await cover_img.click()
-                            await page.wait_for_timeout(1000)
+                        # 5. النقر على زر "Update" / التحديث المفعل
+                        update_btn = page.locator('button:has-text("تحديث"), button:has-text("Update"), [role="button"]:has-text("تحديث"), [role="button"]:has-text("Update")').last
+                        await update_btn.wait_for(state="visible", timeout=5000)
 
-                        # 5. الضغط على زر التحديث النهائي والانتظار لاستجابة السيرفر
-                        final_update_btn = page.locator('button:has-text("تحديث"), button:has-text("Update"), [role="button"]:has-text("تحديث"), [role="button"]:has-text("Update")').last
-                        await final_update_btn.wait_for(state="visible", timeout=5000)
-
-                        if await final_update_btn.is_enabled():
-                            await final_update_btn.click()
-                            print("    [✓] Updated successfully and requested server save.")
+                        if await update_btn.is_enabled():
+                            await update_btn.click()
+                            print("    [✓] Clicked Update successfully!")
                         else:
-                            await final_update_btn.click(force=True)
-                            print("    [✓] Updated successfully (forced with wait).")
+                            await update_btn.click(force=True)
+                            print("    [✓] Clicked Update (forced).")
 
-                        # مهلة إضافية لضمان رفع الحفظ وسكوته على قاعدة البيانات قبل الانتقال للعبة التالية
+                        # مهلة لضمان استقرار السيرفر وحفظ التعديل
                         await page.wait_for_timeout(4000)
 
                     except Exception as sub_e:
@@ -150,7 +149,7 @@ async def run():
                 await context.close()
 
         await browser.close()
-        print("\n[+] Test completed!")
+        print("\n[+] Smart logic test completed!")
 
 if __name__ == "__main__":
     asyncio.run(run())
